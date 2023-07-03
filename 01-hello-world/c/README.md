@@ -1,0 +1,1 @@
+Separate C code into a standalone directory to avoid 'C source files not allowed when not using cgo or SWIG'

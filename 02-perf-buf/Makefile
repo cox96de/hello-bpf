@@ -9,4 +9,4 @@ build:
 tail:
 	tail -f /sys/kernel/debug/tracing/trace_pipe
 test:
-	sudo timeout -s SIGINT --preserve-status 10 ./01-hello-world
+	sudo timeout -s SIGINT --preserve-status 10 ./02-perf-buf
