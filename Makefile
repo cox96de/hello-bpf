@@ -4,7 +4,7 @@ export SHELL := /bin/bash
 format:
 	gofmt -w .
 	go mod tidy
-	find -name '*.c' -type f ! -path "*/libbpf/*" | xargs -I {} clang-format {} -i
+	find . -name '*.c' -type f ! -path "*/libbpf/*" | xargs -I {} clang-format {} -i
 #gofumpt is more strict than gofmt
 	go run mvdan.cc/gofumpt@latest -l -w .
 
