@@ -1,3 +1,4 @@
+// More information about vmlinux.h can be found at docs/vmlinux.md
 #include "vmlinux.h"
 
 #include <bpf_helpers.h>
