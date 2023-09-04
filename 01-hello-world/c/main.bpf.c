@@ -28,6 +28,10 @@ int kprobe__do_sys_openat2(struct pt_regs *ctx) {
   // The `PT_REGS_PARM2` macro is used to extract the value of the second
   // argument passed to the system call. As the signature of `openat2`, the
   // second parameter is `pathname`.
+  // bpf_probe_read is a helper function that allows the eBPF program to read
+  // data from kernel or user space. EBPF program executes in kernel space but
+  // can only read data from kernel or user space using helper functions. You
+  // get the pointer to the data, but you can't dereference it.
   bpf_probe_read(file_name, sizeof(file_name), (void *)(PT_REGS_PARM2(ctx)));
 
   char fmt[] = "open file %s\n";

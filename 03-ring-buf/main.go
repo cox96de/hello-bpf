@@ -7,6 +7,7 @@ import (
 	"log"
 	"os"
 	"os/signal"
+	"strings"
 	"syscall"
 	"time"
 
@@ -17,11 +18,6 @@ import (
 	"github.com/cilium/ebpf/link"
 	"github.com/cilium/ebpf/rlimit"
 )
-
-type event struct {
-	PID      uint32
-	Filename [256]byte
-}
 
 func main() {
 	if err := rlimit.RemoveMemlock(); err != nil {
@@ -48,7 +44,7 @@ func main() {
 	}
 	go func() {
 		defer rb.Close()
-		var e event
+		var e bpfEvent
 		for {
 			record, err := rb.Read()
 			if err != nil {
@@ -63,18 +59,20 @@ func main() {
 				log.Printf("parsing perf event: %s", err)
 				continue
 			}
-			log.Printf("pid: %d, filepath: %s", e.PID, string(e.Filename[:length(e.Filename[:])]))
+			log.Printf("pid: %d, filepath: %s", e.Pid, str(e.Filename))
 		}
 		signals <- syscall.SIGTERM
 	}()
 	<-signals
 }
 
-func length(b []byte) int {
+func str(b [256]int8) string {
+	builder := strings.Builder{}
 	for i := 0; i < len(b); i++ {
 		if b[i] == 0 {
-			return i
+			break
 		}
+		builder.WriteByte(byte(b[i]))
 	}
-	return len(b)
+	return builder.String()
 }
