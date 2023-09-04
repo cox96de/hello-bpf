@@ -2,6 +2,8 @@
 #include <bpf_helpers.h>
 #include <bpf_tracing.h>
 
+char _license[] SEC("license") = "GPL";
+
 // Define a struct to hold the data we want to pass to userspace.
 // In user space, we'll define a struct with the same structure.
 struct event {
@@ -9,6 +11,9 @@ struct event {
   // In most filesystem, the filename is limited to 255 characters.
   char filename[256];
 };
+
+// Force emitting struct event into the ELF.
+const struct event *unused __attribute__((unused));
 
 // The structure of the map can be found in
 // "https://git.kernel.org/pub/scm/network/iproute2/iproute2.git/tree/include/bpf_elf.h?h=v4.14.1".
@@ -29,5 +34,3 @@ int kprobe__do_sys_openat2(struct pt_regs *ctx) {
 
   return 0;
 }
-
-char _license[] SEC("license") = "GPL";
